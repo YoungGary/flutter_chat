@@ -1,9 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:letschat/provider/bottomAnimationProvider.dart';
 import 'package:letschat/provider/chalist.dart';
+import 'package:letschat/provider/ChatDetailProvider.dart';
+import 'package:letschat/provider/contentEditingProvider.dart';
 import 'package:provider/provider.dart';
 import './pages/setting.dart';
 import 'pages/chatDetail.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -59,11 +63,12 @@ class _TabbarsState extends State<Tabbars> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: this._appBarlist[this._currentIndex],
+      // ! multiprovider
       body: MultiProvider(
         providers: [
           ChangeNotifierProvider(
             create: (_) => ChatListProvider(),
-          )
+          ),
         ],
         child: this._pageList[this._currentIndex],
       ),
@@ -93,6 +98,8 @@ class Chatlist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChatListProvider provider = Provider.of<ChatListProvider>(context);
+    // ContentEditingProvider p = Provider.of<ContentEditingProvider>(context);
+    // print(p);
     if (provider.chats == null) {
       return Center(
         child: CircularProgressIndicator(),
@@ -106,20 +113,31 @@ class Chatlist extends StatelessWidget {
             return Column(
               children: <Widget>[
                 GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, 
-                      MaterialPageRoute(
-                        builder: (context)=>DetailPage()
-                      )
-                    );
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          // ! multiprovider
+                            builder: (context) => MultiProvider(
+                                  providers: [
+                                    ChangeNotifierProvider(
+                                      create: (_) => ContentEditingProvider(),
+                                    ),
+                                    ChangeNotifierProvider(
+                                      create: (_)=>BottomRowAnimProvider(context),
+                                    ),
+                                    ChangeNotifierProvider(create: (_)=>ChatDetailProvider())
+                                  ],
+                                  child: DetailPage(),
+                                )));
                   },
                   child: ListTile(
-                    leading: Image.network(
-                        provider.chats[index].userIds[0].avatarUrl),
-                    title: Text(provider.chats[index].userIds[0].userName),
-                    subtitle: Text(provider.chats[index].lastContent),
-                    trailing: Text(provider.chats[index].lastUpdateTime)),
-                ),   
+                      leading: Image.network(
+                          provider.chats[index].userIds[0].avatarUrl),
+                      title: Text(provider.chats[index].userIds[0].userName),
+                      subtitle: Text(provider.chats[index].lastContent),
+                      trailing: Text(provider.chats[index].lastUpdateTime)),
+                ),
                 Divider(
                   height: 1,
                 )

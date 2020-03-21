@@ -1,13 +1,25 @@
 import 'dart:math';
-
+import 'package:letschat/provider/bottomAnimationProvider.dart';
+import 'package:letschat/provider/ChatDetailProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-
+import 'package:letschat/provider/contentEditingProvider.dart';
+import 'bottomInputBar.dart';
+import '../Model/chatModel.dart';
 class DetailPage extends StatelessWidget {
   const DetailPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     BottomRowAnimProvider bottomRowAnimProvider =Provider.of<BottomRowAnimProvider>(context);
+    ContentEditingProvider contentEditingProvider = Provider.of<ContentEditingProvider>(context);
+    TextEditingController txtController = contentEditingProvider.txtController;
+    double toBottom = MediaQuery.of(context).viewInsets.bottom;
+    txtController.addListener(() {
+      contentEditingProvider.updateEditStatus(txtController);
+    });
+    return 
+      Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -23,37 +35,34 @@ class DetailPage extends StatelessWidget {
           )
         ],
       ),
-      body: ChatDetailList(),
+      resizeToAvoidBottomPadding: true,
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).requestFocus(FocusNode());
+          bottomRowAnimProvider.reverseAnim();
+        },
+        child:ChatDetailList(),
+      ),
+      bottomNavigationBar:Container(
+        child:  ChatBottomRow(rpx: MediaQuery.of(context).size.width/750,toBottom: toBottom,txtController: txtController),
+      )
+      
     );
+   
+    
   }
 }
 
-class ChatModel{
-  int sender;
-  String content;
-  String avatarUrl;
-  ChatModel({this.sender,this.content,this.avatarUrl});
-}
 
 
 class ChatDetailList extends StatelessWidget {
   const ChatDetailList({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    List<ChatModel> chat = List<ChatModel>();
-    String url1 = 'https://pic2.zhimg.com/v2-6d1f871ecf2ebbaef30ef4ab7b96a3d0_is.jpg';
-    String url2 = 'https://pic4.zhimg.com/v2-f33d1a1fee3bd54c0d44fc0aa8522cd2_is.jpg';
-    chat.add(ChatModel(sender: 0,content: '112323',avatarUrl: url1));
-    chat.add(ChatModel(sender: 1,content: '456',avatarUrl: url2));
-    chat.add(ChatModel(sender: 1,content: '4234234',avatarUrl: url2));
-    chat.add(ChatModel(sender: 0,content: '454234236',avatarUrl: url2));
-    chat.add(ChatModel(sender: 1,content: '4234',avatarUrl: url2));
-    chat.add(ChatModel(sender: 0,content: '45234236',avatarUrl: url2));
-    chat.add(ChatModel(sender: 1,content: '4542346',avatarUrl: url2));
-    chat.add(ChatModel(sender: 1,content: '452342342346',avatarUrl: url2));
-    chat.add(ChatModel(sender: 0,content: '7234289',avatarUrl: url1));
-    chat.add(ChatModel(sender: 1,content: '1231',avatarUrl: url2));
+    // 引入 聊天详情的provider
+     ChatDetailProvider chatProvider = Provider.of<ChatDetailProvider>(context);
+    // print(chatProvider);
+    List<ChatModel> chat = chatProvider.chats;
     return ListView.builder(
       itemCount: chat.length,
       itemBuilder: (BuildContext context, int index) {
