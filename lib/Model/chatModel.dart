@@ -3,5 +3,6 @@ class ChatModel{
   int sender;
   String content;
   String avatarUrl;
-  ChatModel({this.sender,this.content,this.avatarUrl});
+  int chatType;
+  ChatModel({this.sender,this.content,this.avatarUrl,this.chatType});
 }

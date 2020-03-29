@@ -23,7 +23,9 @@ dependencies:
   json_annotation:
   dio:
   provider: 
-  uuid:   
+  uuid:
+  flutter_sound:
+  path_provider:   
 
 dev_dependencies:
   flutter_test:

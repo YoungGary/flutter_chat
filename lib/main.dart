@@ -4,6 +4,7 @@ import 'package:letschat/provider/bottomAnimationProvider.dart';
 import 'package:letschat/provider/chalist.dart';
 import 'package:letschat/provider/ChatDetailProvider.dart';
 import 'package:letschat/provider/contentEditingProvider.dart';
+import 'package:letschat/provider/voiceRecordProvider.dart';
 import 'package:provider/provider.dart';
 import './pages/setting.dart';
 import 'pages/chatDetail.dart';
@@ -126,7 +127,10 @@ class Chatlist extends StatelessWidget {
                                     ChangeNotifierProvider(
                                       create: (_)=>BottomRowAnimProvider(context),
                                     ),
-                                    ChangeNotifierProvider(create: (_)=>ChatDetailProvider())
+                                    ChangeNotifierProvider(create: (_)=>ChatDetailProvider()
+                                    ),
+                                    ChangeNotifierProvider(create: (_)=>VoiceRecordProvider()
+                                    )
                                   ],
                                   child: DetailPage(),
                                 )));

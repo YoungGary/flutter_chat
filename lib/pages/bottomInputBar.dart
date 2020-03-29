@@ -3,14 +3,13 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:letschat/pages/recordVoiceRow.dart';
 import 'package:letschat/provider/ChatDetailProvider.dart';
+import 'package:letschat/provider/voiceRecordProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:path/path.dart' as p;
-
-// import 'chatBottomFuncSheet.dart';
-// import 'recordVoiceRow.dart';
 
 class ChatBottomRow extends StatelessWidget {
   const ChatBottomRow({
@@ -18,10 +17,12 @@ class ChatBottomRow extends StatelessWidget {
     @required this.rpx,
     @required this.toBottom,
     @required this.txtController,
+    @required this.voiceRecordProvider,
   }) : super(key: key);
   final double rpx;
   final double toBottom;
   final TextEditingController txtController;
+  final VoiceRecordProvider voiceRecordProvider;
   @override
   Widget build(BuildContext context) {
     // 引入 聊天详情的provider
@@ -38,23 +39,28 @@ class ChatBottomRow extends StatelessWidget {
             height: 110 * rpx,
             child: Row(
               children: <Widget>[
-                OutlinedIconButton(
-                  icon: Icon(Icons.keyboard),
-                  onTap: () {},
-                ),
-                //  Transform.rotate(
-                //     angle: pi / 2,
-                //     child: OutlinedIconButton(
-                //       icon: Icon(Icons.wifi),
-                //       onTap: () {
-
-                //       },
-                //     )),
+                voiceRecordProvider.ifVoiceRecord
+                    ? OutlinedIconButton(
+                        icon: Icon(Icons.keyboard),
+                        onTap: () {
+                          voiceRecordProvider.updateVoiceRecord();
+                        },
+                      )
+                    : Transform.rotate(
+                        angle: pi / 2,
+                        child: OutlinedIconButton(
+                          icon: Icon(Icons.wifi),
+                          onTap: () {
+                            voiceRecordProvider.updateVoiceRecord();
+                          },
+                        )),
                 SizedBox(
                   width: 10 * rpx,
                 ),
+                
                 Expanded(
-                    child: Container(
+                    child: voiceRecordProvider.ifVoiceRecord
+                ? RecordVoiceRow():Container(
                         padding: EdgeInsets.symmetric(horizontal: 10 * rpx),
                         color: Colors.white,
                         child: TextField(
@@ -79,7 +85,6 @@ class ChatBottomRow extends StatelessWidget {
                   icon: Icon(Icons.face),
                   onTap: () {},
                 ),
-
                 OutlinedIconButton(
                   icon: Icon(Icons.add),
                   onTap: () {
