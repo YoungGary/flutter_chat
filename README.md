@@ -1,13 +1,17 @@
 # letschat
 
-练习项目----实现一个聊天的应用
+练习项目----实现一个聊天的应用 前端 flutter + 后端go gin框架
+
+大概长这样 现在只是个雏形
+
+![1.png](https://imgkr.cn-bj.ufileos.com/c2328d20-2549-4495-9797-c6ac00d4bfd8.png)
 
 功能点
 
 * 布局
 * 语音相关
-* 视频相关？
-* Go 实现websocket
+* 视频相关
+* Go 实现websocket通信
 
 ## Getting Started
 
